@@ -1,0 +1,42 @@
+<html>
+
+<head>
+    <title>Chat Room</title>
+</head>
+
+<body>
+    <span> welcome {{ request.user.username}} - <a href="{% url 'logout-view' %}">logout</a></span>
+    <h1>Chat room</h1>
+    <b>Messages:</b><br>
+    <textarea id="chat-board" cols="100" rows="20" readonly></textarea><br><br>
+    <input id="message-txt" type="text" size="90" placeholder="Type you message here..." onkeyup="sendByEnter(event)">
+    <button onclick="sendMessage()">Send</button>
+
+    <script>
+        let byId = (id) => document.getElementById(id);
+
+        let wsUrl = 'ws://' + window.location.host + '/ws/chat/' + {{ roomid }} + '/';
+        let chatSocket = new WebSocket(wsUrl);
+
+        chatSocket.onmessage = (e) => {
+            let data = JSON.parse(e.data);
+            document.getElementById('chat-board').value += (data.message + '\n');
+        };
+
+        chatSocket.onclose = (e) => {
+            console.error('websocket closed');
+        };
+
+        var sendByEnter = (e) => {
+            if (e.keyCode == 13) sendMessage();
+        }
+
+        var sendMessage = () => {
+            let messageText = byId('message-txt');
+            chatSocket.send(JSON.stringify({ 'message': messageText.value }));
+            messageText.value = '';
+        };
+    </script>
+</body>
+
+</html>

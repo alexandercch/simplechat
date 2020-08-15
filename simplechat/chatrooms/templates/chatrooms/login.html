@@ -1,0 +1,20 @@
+<html>
+    <head>
+        <title>Login to chat</title>
+    </head>
+    <body>
+        <h1>Login to chat</h1>
+        <form accept="login" method="POST">
+            {% csrf_token %}
+            <label>Username: <input type="text" name="username" /></label>
+            <br>
+            <label>Password: <input type="password" name="password" /></label>
+            <br>
+            <button type="submit">Login</button>
+            {% if error %}
+            <br />
+            Wrong user or password
+            {% endif %}
+        </form>
+    </body>
+</html>
