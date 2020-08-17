@@ -49,3 +49,9 @@ on browser go to localhost:8000/admin and create some room objects, use user and
 
 on browser go to localhost:8000/chat/
 login if not already logged and chat
+
+
+**sample execution:**
+
+![Image of Yaktocat](https://i.ibb.co/GQddYLk/chats.png)
+
