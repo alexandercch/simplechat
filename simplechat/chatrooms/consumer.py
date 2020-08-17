@@ -48,6 +48,7 @@ class ChatRoomConsumer(WebsocketConsumer):
                     'username': username
                 }
             )
+            # storage can change to normal db if needed
             r = redis.Redis(host=settings.REDIS_HOST, port=settings.REDIS_PORT)
             msg = json.dumps({'message': message, 'username': username})
             r.lpush(self.room_group_name, msg)

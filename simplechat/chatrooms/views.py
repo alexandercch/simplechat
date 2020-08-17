@@ -46,8 +46,9 @@ def room(request, roomid):
             m = json.loads(m)
             messages = '{} :: {}\\n'.format(
                 m['username'], m['message']) + messages
+        room = Room.objects.get(id=roomid)
         return render(request, 'chatrooms/room.html',
-            {'roomid': roomid, 'messages': messages}
+            {'roomid': roomid, 'roomname': room.name, 'messages': messages}
         )
     else:
         login_url = resolve_url('login-view')
