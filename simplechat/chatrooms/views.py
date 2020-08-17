@@ -1,15 +1,19 @@
+import redis
+import json
+
+from django.conf import settings
 from django.shortcuts import render, resolve_url
 from django.contrib.auth import authenticate, login, logout
 from django.http import HttpResponseRedirect
 from django.views.decorators.csrf import csrf_protect
 
 from .models import Room
+from .constants import MAX_CHAT_HISTORY
+
 
 def index(request):
     if request.user.is_authenticated:
-        context = {
-            'rooms': Room.objects.all() 
-        }
+        context = {'rooms': Room.objects.all()}
         return render(request, 'chatrooms/index.html', context=context)
     else:
         login_url = resolve_url('login-view')
@@ -35,7 +39,16 @@ def user_login(request):
 
 def room(request, roomid):
     if request.user.is_authenticated:
-        return render(request, 'chatrooms/room.html', {'roomid': roomid})
+        r = redis.Redis(host=settings.REDIS_HOST, port=settings.REDIS_PORT)
+        room_name = "room_{}".format(roomid)
+        messages = ""
+        for m in r.lrange(room_name, 0, MAX_CHAT_HISTORY):
+            m = json.loads(m)
+            messages = '{} :: {}\\n'.format(
+                m['username'], m['message']) + messages
+        return render(request, 'chatrooms/room.html',
+            {'roomid': roomid, 'messages': messages}
+        )
     else:
         login_url = resolve_url('login-view')
 

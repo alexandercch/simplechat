@@ -11,6 +11,11 @@ from .constants import (
 
 @shared_task
 def retrieve_stock_value(chat_room, message):
+    """
+    retrieves stock value of a company stock code, as csv has values only in
+    second row we access directly to it, then sent it to the chat room
+    """
+
     stock_code = message.replace(STOCK_COMMAND, '')
     stock_service = STOCK_URL.format(stock_code=stock_code)
     

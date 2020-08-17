@@ -14,6 +14,7 @@
 
     <script>
         let byId = (id) => document.getElementById(id);
+        byId('chat-board').value = '{{ messages }}';
 
         let wsUrl = 'ws://' + window.location.host + '/ws/chat/' + '{{ roomid }}' + '/';
         let chatSocket = new WebSocket(wsUrl);
@@ -24,7 +25,7 @@
         };
 
         chatSocket.onclose = (e) => {
-            console.error('websocket closed');
+            console.error('websocket closed, refresh the page');
         };
 
         var sendByEnter = (e) => {
